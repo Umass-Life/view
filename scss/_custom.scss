@@ -1,0 +1,26 @@
+// Here you can add other styles
+
+.my-data-table-td {
+    max-width: 500px;
+    // text-align: center;
+}
+
+.my-calendar-in-view {
+    max-width:300px;
+    z-index: 100000;
+    position: absolute;
+}
+.my-calendar-picker-in-view {
+    z-index:0;
+}
+
+.label-static {
+    padding-top: 6px
+}
+
+.root-style {
+    width: 1200px;
+    overflow-x: scroll;
+    white-space: nowrap;
+    overflow-y: hidden;
+}
