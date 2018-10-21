@@ -4,45 +4,33 @@ import sematable, {Table, makeSelectors} from 'sematable'
 import {Button, Row, Col} from 'reactstrap'
 import {NavLink, Link, withRouter} from 'react-router-dom';
 var sformat = require('string-format')
-const selectors = makeSelectors("SleepDataTable");
-import {SleepActionService} from '../../actions/sleep_action';
-import RemarkModal from '../RemarkBox/remark_modal';
-const util = require('../../utilities')
-import _ from "lodash"
-const {dformat} = util;
+const selectors = makeSelectors("EmaDataTable");
+import {EMAActionService} from '../../actions/ema_action';
+const util = require('../../utilities');
+import _ from "lodash";
+const { dformat } = util;
 
-
-const _ActionButtonContainer = ({dispatch, row, history}) => {
-    let style = {
-        'width':'80px'
+const EMALevel = ({row}) => {
+    const colorMap = {
+        "Feeling great": "success",
+        "Feeling good": "info",
+        "Neither": "secondary",
+        "A little stressed": "warning",
+        "Stressed out": "danger"
     }
-    return (
-        <Row>
-            <Col sm='3'>
-                <Link to={sformat("sleep/{0}/view", row.id)}>
-                    <Button color="primary" size="sm" style={style}>View</Button>
-                </Link>
-            </Col>
-        </Row>
-    )
+    return (<Row>
+                <Col sm='2' >
+                    <Button style={{'width': '200px'}} color={colorMap[row.stressLevel]} size="sm" disabled={false}>
+                        {row.stressLevel}
+                    </Button>
+                </Col>
+            </Row>);
 }
-
-let ActionButtonContainer = withRouter(connect(null)(_ActionButtonContainer));
-
-// id: String(sleep.id),
-// dateOfSleep: sleep.dateOfSleep,
-// fitbitUserId: sleep.fitbitUserId,
-// duration: sleep.duration,
-// efficiency: sleep.efficiency,
-// endTime: new Date(sleep.endTime),
+//{key: 'stressLevel', header: 'Stress Level', sortable: true, searchable: true, className:"my-data-table-td"},
 const columns = [
     {key: 'id', header: 'ID', sortable: true, searchable: true, primaryKey: true, className:"my-data-table-td"},
-    {key: 'fitbitUserId', header: 'Owner', sortable: true, searchable: true, className:"my-data-table-td"},
-    {key: 'dateOfSleep', header: 'Date', sortable: true, searchable: true, className:"my-data-table-td"},
-    {key: 'duration', header: 'Length', sortable: true, searchable: true, className:"my-data-table-td"},
-    {key: 'efficiency', header: 'Quality', sortable: true, searchable: true, className:"my-data-table-td"},
-    {key: 'endTime', header: 'End', sortable: true, searchable: true, className:"my-data-table-td"},
-    {key: 'actions', header: "Actions", Component: ActionButtonContainer}
+    {key: 'dateTime', header: 'Timestamp', sortable: true, searchable: true, className:"my-data-table-td"},
+    {key: 'actions', header: "Stress Levels", Component: EMALevel}
 ]
 
 const propTypes = {
@@ -52,7 +40,7 @@ const propTypes = {
 }
 
 
-class _SleepDataTable extends React.Component{
+class _EMADataTable extends React.Component{
     constructor(props){
         super(props);
         this.state = {
@@ -61,7 +49,6 @@ class _SleepDataTable extends React.Component{
         }
         this.toggle = this.toggle.bind(this);
     }
-
     toggle(){
         this.setState({modal: !this.state.modal})
     }
@@ -97,18 +84,15 @@ class _SleepDataTable extends React.Component{
     //<RemarkModal className="ContractRemark" toggle={this.toggle} modal={this.state.modal} remark={this.state.remark}/>
 }
 
-const sleepToData = (sleepList) => {
-    var newSleepList = _.map(sleepList, sleep => {
+const emaToDataTable = (emaList) => {
+    var emaDataTableList = _.map(emaList, emaDatum => {
         return {
-            id: String(sleep.id),
-            dateOfSleep: sleep.dateOfSleep,
-            fitbitUserId: sleep.fitbitUserId,
-            duration: new String(sleep.duration/60000),
-            efficiency: sleep.efficiency,
-            endTime: dformat(new Date(sleep.endTime))
+            id: String(emaDatum.id),
+            dateTime: dformat(new Date(emaDatum.dateTime*1000), {detailed:true, month_num: true}),
+            stressLevel: emaDatum.stressLevel,
         }
     });
-    return newSleepList
+    return emaDataTableList
 }
 
 const mapStateToProps = state => {
@@ -120,9 +104,9 @@ const mapStateToProps = state => {
     }
 }
 
-_SleepDataTable.propTypes = propTypes;
-const SleepDataTable = connect(mapStateToProps)(sematable('SleepDataTable', _SleepDataTable, columns, {defaultPageSize: 50}));
+_EMADataTable.propTypes = propTypes;
+const EMADataTable = connect(mapStateToProps)(sematable('EMADataTable', _EMADataTable, columns, {defaultPageSize: 50}));
 export {
-    SleepDataTable,
-    sleepToData
+    EMADataTable,
+    emaToDataTable
 }

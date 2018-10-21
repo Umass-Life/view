@@ -21,9 +21,11 @@ const COMPONENT_URL = "/sleep"
 maintainAspectRatio: false
 }}
 */
-var sleep_states_map = {'wake':0, 'rem':1, 'light':2, 'deep':3, 'awake':4, 'restless': 5, 'asleep':6};
-var sleep_states = ['wake', 'rem', 'light', 'deep', 'awake','restless', 'asleep'];
+// var sleep_states_map = {'wake':0, 'rem':1, 'light':2, 'deep':3, 'awake':4, 'restless': 5, 'asleep':6};
+// var sleep_states = ['wake', 'rem', 'light', 'deep', 'awake','restless', 'asleep'];
 
+var sleep_states_map = {'deep':0, 'light':1, 'rem':2, 'wake':3, 'awake':4, 'asleep': 5, 'restless':6};
+var sleep_states = ['deep', 'light', 'rem', 'wake', 'awake','asleep', 'restless'];
 
 class SleepTSComponent extends React.Component {
     constructor(props){
@@ -98,7 +100,7 @@ class SleepTSComponent extends React.Component {
             for(var i = 0; i < sleepLineData.length-1; i++){
                 var sleepLineDatum = sleepLineData[i];
                 var sleepLineDatumTo = {...sleepLineDatum}
-                sleepLineDatumTo.x = new Date(sleepLineData[i+1].x.getTime()-1);
+                sleepLineDatumTo.x = new Date(sleepLineData[i+1].x.getTime());
 
                 sleepData.push(sleepLineDatum);
                 sleepData.push(sleepLineDatumTo);

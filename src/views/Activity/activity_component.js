@@ -241,7 +241,6 @@ class ActivityComponent extends React.Component {
                                 onChange={(e) => {this.setState({includeMinutesSedentary: !this.state.includeMinutesSedentary})}}
                                 checked={this.state.includeMinutesSedentary}/>{' '}
                             Include Minutes Sedentary
-
                             </Label>
                         </Col>
                         </Row>

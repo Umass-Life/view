@@ -11,15 +11,13 @@ const REQUESTING = "REQUESTING";
 const RECEIVED_HR = "RECEIVED_HR"
 const RECEIVED_HRS= "RECEIVED_HR_LIST"
 const RESETTING = "RESETTING";
+const RECEIVED_LATEST_HR = "RECEIVED_LATEST_HR"
 
-const _request = () => {
-    return {
-        type: REQUESTING,
-    }
-}
+const _request = () => ({type: REQUESTING})
 const _reset = () => ({type: RESETTING});
 const _receivedHR = (hr, id) => ({ type: RECEIVED_HR, heartrate: hr, id: id})
 const _receivedHRS = (hrs, id) => ({ type: RECEIVED_HRS, heartrates: hrs, id: id})
+const _receivedLatest = (latestHr, id) => ({ type: RECEIVED_LATEST_HR, latestHr: latestHr, id: id})
 
 class HeartrateActionService {
     static buildEmptyState(){
@@ -27,6 +25,7 @@ class HeartrateActionService {
             heartrates: [],
             heartrate: null,
             isRequesting: false,
+            latestHr: null,
             id: null
         }
     }
@@ -64,6 +63,25 @@ class HeartrateActionService {
         }
     }
 
+    static fetchLatest(fid, onSuccess, onFailure, options={id:null}){
+        return dispatch => {
+            dispatch(_request())
+            var url = sformat("{0}/latest?fid={1}", API_ROUTE, fid);
+            console.log(url);
+            axios.get(url, {
+                headers: defaultAxiosHeaders(),
+                withCredentials: true
+            }).then(response => {
+                onSuccess(response);
+                console.log(response.data);
+                dispatch(_receivedLatest(response.data.FitbitHeartrate, options.id));
+            }).catch(error => {
+                onFailure(error);
+                dispatch(_receivedLatest(null,options.id));
+            });
+        }
+    }
+
     static reset = () => ( _reset() );
 }
 
@@ -72,5 +90,6 @@ export {
     RESETTING,
     REQUESTING,
     RECEIVED_HR,
-    RECEIVED_HRS
+    RECEIVED_HRS,
+    RECEIVED_LATEST_HR
 }

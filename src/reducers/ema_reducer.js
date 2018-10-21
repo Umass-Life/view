@@ -1,47 +1,36 @@
 import {
-    HeartrateActionService,
+    EMAActionService,
     RESETTING,
     REQUESTING,
-    RECEIVED_HR,
-    RECEIVED_HRS,
-    RECEIVED_LATEST_HR
-} from '../actions/heartrate_action'
+    RECEIVED_EMA_LIST,
+} from '../actions/ema_action.js'
 import {combinedReducers} from 'redux';
-import _ from 'lodash'
+import _ from 'lodash';
 const sformat = require('string-format');
 
-const HeartrateReducer = (state = HeartrateActionService.buildEmptyState(), action) => {
+const EMAReducer = (state = EMAActionService.buildEmptyState(), action) => {
     switch(action.type){
         case REQUESTING:
             return {
                 ...state,
                 isRequesting: true,
                 id: action.id ? action.id : null,
-
             }
-        case RECEIVED_HRS:
+        case RECEIVED_EMA_LIST:
             return {
                 ...state,
-                heartrates: action.heartrates ? action.heartrates : state.heartrates,
-                id: action.id ? action.id : null,
-                isRequesting: false
-            }
-        case RECEIVED_LATEST_HR:
-            return {
-                ...state,
-                latestHr: action.latestHr ? action.latestHr : null,
+                emaList: action.emaList && action.emaList.length ? action.emaList : [],
                 id: action.id ? action.id : null,
                 isRequesting: false
             }
         case RESETTING:
-            return HeartrateActionService.buildEmptyState()
+            return EMAActionService.buildEmptyState()
         default:
             return state;
     }
 }
 
-export default HeartrateReducer;
-
+export default EMAReducer;
 
 /*
 case RECEIVED_CONTRACT:

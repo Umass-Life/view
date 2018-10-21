@@ -12,7 +12,8 @@ import BalanceReducer from './balance_reducer';
 import TCPReducer from './tcp_reducer'
 import FileEntityReducer from './file_entity_reducer'
 import EntityPolicyEdgeReducer from './entity_policy_edge_reducer';
-import FetchReducer from './fetch_reducer'
+import FetchReducer from './fetch_reducer';
+import EMAReducer from './ema_reducer';
 import {combineReducers} from 'redux';
 import {reducer as sematable} from 'sematable';
 
@@ -22,7 +23,6 @@ let initState = {
 };
 
 const TaskReducer = (state = initState.tasks, action) => {
-
     switch (action.type){
         case CREATE_TASK:
             var k = [...state, action.task];
@@ -58,5 +58,6 @@ export default combineReducers({
     balanceComponent: BalanceReducer,
     TCPComponent: TCPReducer,
     fileEntityComponent: FileEntityReducer,
-    entityPolicyEdgeComponent: EntityPolicyEdgeReducer
+    entityPolicyEdgeComponent: EntityPolicyEdgeReducer,
+    EMAComponent: EMAReducer,
 });

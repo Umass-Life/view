@@ -12,9 +12,10 @@ const FetchReducer = (state = FetchService.buildEmptyState(), action) => {
     switch(action.type){
         case REQUESTING:
             return {
+                ...state,
                 isRequesting: true,
                 id: action.id ? action.id : null,
-                ...state
+
             }
         case RECEIVED:
             return {

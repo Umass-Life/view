@@ -108,8 +108,6 @@ class SleepComponent extends React.Component {
             var curDate = moment(this.state.from);
             const endDate = moment(this.state.to);
             // const endDate = moment(sleepBarData[sleepBarData.length-1].x);
-
-
             while(curDate.toDate().getTime() <= endDate.toDate().getTime()){
                 var datum = _.find(sleepBarData, sleepBarDatum => sleepBarDatum.x == curDate.format('YYYY-MM-DD'));
                 if (!datum){

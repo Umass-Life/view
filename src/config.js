@@ -1,5 +1,8 @@
+const URI = 'localhost';
 var config = {
-    API_ROOT: 'http://localhost:8771',
+    API_ROOT: 'http://' + URI + ':8771',
+    EMA_ROOT: 'http://'+URI+':8773',
+    ACC_ROOT: 'http://'+URI+':8772',
     defaultAxiosHeaders: (headers) => {
         return {
             ...headers,

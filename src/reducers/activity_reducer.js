@@ -3,7 +3,9 @@ import {
     RESETTING,
     REQUESTING,
     RECEIVED_ACTIVITIES,
-    RECEIVED_ACTIVITY_TS
+    RECEIVED_ACTIVITY_TS,
+    RECEIVED_LATEST_AGGREGATE_INFO,
+    RECEIVED_LATEST_INTRADAY_INFO
 } from '../actions/activity_action'
 import {combinedReducers} from 'redux';
 import _ from 'lodash'
@@ -13,9 +15,9 @@ const ActivityReducer = (state = ActivityActionService.buildEmptyState(), action
     switch(action.type){
         case REQUESTING:
             return {
+                ...state,
                 isRequesting: true,
                 id: action.id ? action.id : null,
-                ...state
             }
         case RECEIVED_ACTIVITIES:
             return {
@@ -28,6 +30,22 @@ const ActivityReducer = (state = ActivityActionService.buildEmptyState(), action
             return {
                 ...state,
                 activityTimeserie: action.activityTimeserie ? action.activityTimeserie : [],
+                id: action.id ? action.id : null,
+                isRequesting: false
+            }
+        case RECEIVED_LATEST_AGGREGATE_INFO:
+            return {
+                ...state,
+                latestAggregateInfo: action.latestAggregateInfo ?  action.latestAggregateInfo : null,
+                latestIntradayInfo: null,
+                id: action.id ? action.id : null,
+                isRequesting: false
+            }
+        case RECEIVED_LATEST_INTRADAY_INFO:
+            return {
+                ...state,
+                latestIntradayInfo: action.latestIntradayInfo ?  action.latestIntradayInfo : null,
+                latestAggregateInfo: null,
                 id: action.id ? action.id : null,
                 isRequesting: false
             }

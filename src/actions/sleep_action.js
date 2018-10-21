@@ -14,12 +14,14 @@ const RECEIVED_SLEEP = "RECEIVED_SLEEP"
 const RECEIVED_SLEEP_LIST = "RECEIVED_SLEEP_LIST"
 const RECEIVED_SLEEP_TS = "RECEIVED_SLEEP_TS"
 const RESETTING = "RESETTING";
+const RECEIVED_LATEST_SLEEP = "RECEIVED_LATEST_SLEEP";
 
 const _request = () => ({ type: REQUESTING })
 const _reset = () => ({type: RESETTING});
 const _receivedSleep = (sleep, id) => ({ type: RECEIVED_SLEEP, sleep: sleep, id: id})
 const _receivedSleepList = (sleepList, id) => ({ type: RECEIVED_SLEEP_LIST, sleepList: sleepList, id: id})
 const _receivedSleepTS = (sleepTS, id) => ({ type: RECEIVED_SLEEP_TS, sleepTS: sleepTS, id: id})
+const _receivedLatest = (latestSleep, id) => ({ type: RECEIVED_LATEST_SLEEP, latestSleep: latestSleep, id: id})
 
 class SleepActionService {
     static buildEmptyState(){
@@ -28,6 +30,7 @@ class SleepActionService {
             sleepTS: [],
             sleep: null,
             isRequesting: false,
+            latestSleep: null,
             id: null
         }
     }
@@ -92,6 +95,25 @@ class SleepActionService {
         }
     }
 
+    static fetchLatest(fid, onSuccess, onFailure, options={id:null}){
+        return dispatch => {
+            dispatch(_request())
+            var url = sformat("{0}/latest?fid={1}", API_ROUTE, fid);
+            console.log(url);
+            axios.get(url, {
+                headers: defaultAxiosHeaders(),
+                withCredentials: true
+            }).then(response => {
+                onSuccess(response);
+                console.log(response.data);
+                dispatch(_receivedLatest(response.data.FitbitSleep, options.id));
+            }).catch(error => {
+                onFailure(error);
+                dispatch(_receivedLatest(null,options.id));
+            });
+        }
+    }
+
     static reset = () => ( _reset() );
 }
 
@@ -102,6 +124,7 @@ export {
     RECEIVED_SLEEP_LIST,
     RECEIVED_SLEEP_TS,
     RECEIVED_SLEEP,
+    RECEIVED_LATEST_SLEEP
 }
 
 /*

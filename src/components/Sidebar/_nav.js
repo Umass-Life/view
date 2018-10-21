@@ -51,6 +51,12 @@ export default {
         roles: []
     },
     {
+        name: 'EMA',
+        url: '/ema',
+        icon: 'circle-o',
+        roles: []
+    },
+    {
       name: 'User Management',
       url: '/userManagement',
       icon: 'circle-o',

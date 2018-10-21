@@ -13,23 +13,12 @@ import UserComponent from '../../views/User/user_component';
 import UserView from '../../views/User/user_view';
 import RoleComponent from '../../views/Role/role_component';
 import RoleView from '../../views/Role/role_view';
-import CustomerProfileComponent from '../../views/CustomerProfile/customer_profile_component';
-import CustomerProfileView from '../../views/CustomerProfile/customer_profile_view';
-import RoomComponent from '../../views/Room/room_component';
-import RoomView from '../../views/Room/room_view';
 import SleepComponent from '../../views/Sleep/sleep_component';
 import SleepTSComponent from '../../views/SleepTimeSerie/sleep_ts_component';
 import HeartrateComponent from '../../views/Heartrate/heartrate_component';
 import ActivityComponent from '../../views/Activity/activity_component';
 import ActivityTSComponent from '../../views/ActivityTimeSerie/activity_ts_component';
-import BalanceComponent from '../../views/Balance/balance_component';
-import BalanceView from '../../views/Balance/balance_view';
-import TransactionView from '../../views/Transaction/transaction_view';
-import TransactionComponent from '../../views/Transaction/transaction_component';
-import TCPView from '../../views/TCP/tcp_view';
-import TCPComponent from '../../views/TCP/tcp_component';
-import AppContainer from '../../components/AppContainerComponent';
-import {SessionActionService} from '../../actions/session_action';
+import EMAComponent from '../../views/EMA/ema_component'
 import {UserActionService} from '../../actions/user_action';
 import {connect} from 'react-redux';
 
@@ -57,6 +46,7 @@ class Full extends Component {
     }
 
     renderComponent(f){
+
         return (props) => {
             const sessionUser = this.props.sessionUser;
             var newProps = {
@@ -80,6 +70,7 @@ class Full extends Component {
         console.log("WHAT");
         return (<ActivityComponent  {...newProps}/>)
     }}/>
+    // <Route path="/userManagement/users/:id/view" name="UserView" render={this.renderComponent((props) => <UserView {...props}/>)}/>
     */
       return (<div className="app root-style">
         <Header {...this.state}/>
@@ -90,21 +81,22 @@ class Full extends Component {
             <Container fluid>
               <Switch>
                 <Route path="/dashboard" name="Dashboard" component={Dashboard}/>
-
-                <Route path="/userManagement/users/:id/view" name="UserView" component={UserView}/>
-                <Route path="/userManagement/users" name="UserComponent" component={UserComponent}/>
+                <Route path="/userManagement/users/:id/:method" name="UserView" render={this.renderComponent((props) => <UserView{...props}/>)}/>
+                <Route path="/userManagement/users/create" name="UserView" render={this.renderComponent((props) => <UserView{...props}/>)}/>
+                <Route path="/userManagement/users" name="UserComponent" render={this.renderComponent((props) => <UserComponent{...props}/>)}/>
 
                 <Route path="/roleManagement/roles/:id/view" name="RoleView" component={RoleView}/>
                 <Route path="/roleManagement/roles/create" name="RoleView" component={RoleView}/>
                 <Route path="/roleManagement/roles" name="RoleComponent" component={RoleComponent}/>
 
-                <Route path="/sleep/:id/view" name="SleepTSComponent" component={this.renderComponent((props) => <SleepTSComponent {...props}/>)} />
+                <Route path="/sleep/:id/view" name="SleepTSComponent" render={this.renderComponent((props) => <SleepTSComponent {...props}/>)} />
                 <Route path="/sleep" name="SleepComponent" render={this.renderComponent((props) => <SleepComponent {...props}/>)} />
 
 
                 <Route path="/heartrate" name="HeartrateComponent" render={this.renderComponent( (props) => <HeartrateComponent {...props} />)}/>
                 <Route path="/activities/timeserie" name="ActivityTSComponent" render={this.renderComponent( (props) => <ActivityTSComponent {...props} />)}/>
                 <Route path="/activities" name="ActivityComponent" render={this.renderComponent( (props) => <ActivityComponent {...props} />)}/>
+                <Route path="/ema" name="EMAComponent" render={this.renderComponent( (props) => <EMAComponent {...props} />)}/>
 
 
                 <Redirect from="/" to="/dashboard"/>

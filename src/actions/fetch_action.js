@@ -24,9 +24,10 @@ class FetchService {
 
     static fetch(path, onSuccess, onFailure, options={id:null}){
         return dispatch => {
-            dispatch(_request())
+            dispatch(_request(options.id))
             const url = API_ROOT + path;
             console.log("FetchService.fetch: " + url);
+            console.log(options)
             axios.get(url, {
                 headers: defaultAxiosHeaders(),
                 withCredentials: true

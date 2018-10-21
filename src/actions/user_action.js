@@ -1,6 +1,6 @@
 import axios from 'axios'
 import config from '../config'
-const {API_ROOT, defaultAxiosHeaders} = config
+const {API_ROOT, ACC_ROOT, defaultAxiosHeaders} = config
 
 const REQUESTING_USERS = "REQUESTING_USERS"
 const RECEIVED_USERS = "RECEIVED_USERS"
@@ -25,10 +25,11 @@ const _receivedUsers = (users) => {
     }
 }
 
-const _receivedUser = (response) => {
+const _receivedUser = (user) => {
     return {
         type: RECEIVED_USER,
-        responseData: response.data
+        responseData: null,
+        user: user
     }
 }
 
@@ -56,7 +57,9 @@ class UserActionService {
             _type: "UserComponentObject"
         }
     }
-    static fetchUsers = (options={includeProfile: true}) => {
+    static fetchUsers = ( onSuccess, onError,options={includeProfile: true}) => {
+        if (!onSuccess){ onSuccess = () => {}; }
+        if (!onError) { onError = () => {}; }
         return (dispatch) => {
             dispatch(_requestUsers());
             var _arr = [];
@@ -79,11 +82,12 @@ class UserActionService {
                         console.log("ERR profiles mismatch");
                     }
                 }
-
+                onSuccess(response);
                 dispatch(_receivedUsers(users));
             }).catch(error => {
                 console.log('[USER_ACTION ERR]');
                 console.log(error);
+                onError(error);
                 dispatch(_receivedUsers(null))
             })
         }
@@ -98,7 +102,7 @@ class UserActionService {
                 headers: defaultAxiosHeaders(),
                 withCredentials: true
             }).then(response => {
-                dispatch(_receivedUser(response));
+                dispatch(_receivedUser(response.data));
             }).catch(error => {
                 console.log('[USER_ACTION fetchByUserId ERR]')
                 console.log(error);
@@ -107,11 +111,39 @@ class UserActionService {
         }
     }
 
+    static createStrainUser = (strainUserJson, onSuccess, onFailure) => {
+        if (!onSuccess) { onSuccess = ()=>{}; }
+        if (!onFailure) { onFailure = ()=>{}; }
+        return (dispatch) => {
+            dispatch(_requestUsers());
+            let url = ACC_ROOT + "/strain-user"
+            axios.post(url, strainUserJson,{ 
+                headers: defaultAxiosHeaders(),
+                withCredentials: true
+            }).then(response => {
+                dispatch(_receivedUser(response.data.StrainUser));
+                onSuccess(response);
+            }).catch(error => {
+                dispatch(_receivedUser(null));
+                onFailure(error);
+            });
+        }
+    }
+
+    static getFitbitAuthenticationLink = (strainUser) => {
+        if (strainUser && strainUser.id){
+            var url = API_ROOT + "/users/authorize?strainUserId=" + strainUser.id;
+            return url;
+        }
+        return null;
+    }
+
     static selectSessionUserbyFitbitId = (fitbitId) => {
         return (dispatch) => {
             dispatch(_selectSessionUserByFitbitId(fitbitId));
         }
     }
+
     //
     // static create = (user, onSuccess, onFailure) => {
     //     return (dispatch) => {
