@@ -1,4 +1,4 @@
-const URI = 'localhost';
+const URI = '172.31.50.56';
 var config = {
     API_ROOT: 'http://' + URI + ':8771',
     EMA_ROOT: 'http://'+URI+':8773',
